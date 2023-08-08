@@ -1,5 +1,17 @@
 # toaster
-The toaster allows sending notifications to users on the same network.
+Or is this a pager?
+The toaster allows sending notifications to users on the same network!
+
+# Features
+1. Send notifications to devices on your local network.
+2. Broadcast to all devices.
+3. Receive notifications.
+
+# To Do
+- [ ] Listen (server)
+- [ ] Send (client)
+  - [ ] Send to single
+  - [ ] Send to multiple
 
 # Dependencies
 ```pip
