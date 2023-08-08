@@ -9,7 +9,18 @@ class _conf_:
   delimiter = "<|>"
   name="<use-dns>"
   def __init__(self):
-    config_file = open("toast.conf", "r")
+    # If file exists, read config from file
+    config_file = None
+    try:
+      config_file = open("toast.conf", "r")
+    except FileNotFoundError:
+      # Create config
+      config_file = open("toast.conf", "w")
+      config_file.write("port=7515\n")
+      config_file.write("delimiter=\"<|>\"\n")
+      config_file.write("name=\n")
+      config_file.close()
+      config_file = open("toast.conf", "r")
     for line in config_file:
       if line.startswith("port="):
         self.port = int(line[5:])
