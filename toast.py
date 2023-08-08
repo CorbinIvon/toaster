@@ -73,28 +73,32 @@ def send(target_ip, title, message):
   s.send(f"{config.name}{config.delimiter}{title}{config.delimiter}{message}".encode('utf-8'))
   s.close()
 
-# If arg is --help or -h, print help
-if len(sys.argv) > 1 and (sys.argv[1] == "--help" or sys.argv[1] == "-h"):
-  print("Usage: python3 toast.py [OPTION]")
-  print("Options:")
-  print("  -l | --listen\tListen for notifications - No args")
-  print("  -s | --send\tSend a notification - Args: [target_ip] [title] [message]")
-  print("  -h | --help\tPrint this help message - No args")
+try:
+  # If arg is --help or -h, print help
+  if len(sys.argv) > 1 and (sys.argv[1] == "--help" or sys.argv[1] == "-h"):
+    print("Usage: python3 toast.py [OPTION]")
+    print("Options:")
+    print("  -l | --listen\tListen for notifications - No args")
+    print("  -s | --send\tSend a notification - Args: [target_ip] [title] [message]")
+    print("  -h | --help\tPrint this help message - No args")
 
-# If arg is --listen, listen for notifications
-elif len(sys.argv) > 1 and sys.argv[1] == "--listen" or sys.argv[1] == "-l":
-  listen()
+  # If arg is --listen, listen for notifications
+  elif len(sys.argv) > 1 and sys.argv[1] == "--listen" or sys.argv[1] == "-l":
+    listen()
 
-# If arg is --send, send a notification to device
-elif len(sys.argv) > 3 and (sys.argv[1] == "--send" or sys.argv[1] == "-s"):
-  send(sys.argv[2], sys.argv[3], sys.argv[4])
+  # If arg is --send, send a notification to device
+  elif len(sys.argv) > 3 and (sys.argv[1] == "--send" or sys.argv[1] == "-s"):
+    send(sys.argv[2], sys.argv[3], sys.argv[4])
 
-# If arg is --debug, print debug info
-elif len(sys.argv) > 1 and sys.argv[1] == "--debug":
-  print("Args:")
-  for arg in sys.argv:
-    print("  " + arg)
-  print("Config:")
-  print("  Port: " + str(config.port))
-  print("  Delimiter: " + config.delimiter)
-  print("  Name: " + config.name)
+  # If arg is --debug, print debug info
+  elif len(sys.argv) > 1 and sys.argv[1] == "--debug":
+    print("Args:")
+    for arg in sys.argv:
+      print("  " + arg)
+    print("Config:")
+    print("  Port: " + str(config.port))
+    print("  Delimiter: " + config.delimiter)
+    print("  Name: " + config.name)
+except KeyboardInterrupt:
+  print("\nInterrupted by user. Exiting...")
+  sys.exit(0)
