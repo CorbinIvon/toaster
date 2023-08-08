@@ -44,21 +44,24 @@ def listen():
   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   s.bind(('0.0.0.0', config.port))
   s.listen(5)
-
+  s.settimeout(3)
   try:
     while True:
-      client, addr = s.accept()
-      data = client.recv(1024).decode('utf-8')
-      sender, title, message = data.split(config.delimiter)
-      if sender == "<use-dns>" or sender == "":
-        sender = socket.gethostbyaddr(addr[0])[0]
-      if sender == addr[0]:
-        sender = addr[0]
-      print(f"Received notification from {sender} ({addr[0]}:{addr[1]})")
-      if not data:
-        break
-      send_notification(title, f"From: {sender}\n" + message)
-      client.close()
+      try:
+        client, addr = s.accept()
+        data = client.recv(1024).decode('utf-8')
+        sender, title, message = data.split(config.delimiter)
+        if sender == "<use-dns>" or sender == "":
+          sender = socket.gethostbyaddr(addr[0])[0]
+        if sender == addr[0]:
+          sender = addr[0]
+        print(f"Received notification from {sender} ({addr[0]}:{addr[1]})")
+        if not data:
+          break
+        send_notification(title, f"From: {sender}\n" + message)
+        client.close()
+      except socket.timeout:
+        continue
   except KeyboardInterrupt:
     print("\nStopping the listener...")
     s.close()
