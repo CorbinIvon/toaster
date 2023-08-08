@@ -5,3 +5,8 @@ The toaster allows sending notifications to users on the same network.
 ```pip
 pip install pyinstaller plyer
 ```
+
+# Compile
+```py
+pyinstaller toast.spec
+```
