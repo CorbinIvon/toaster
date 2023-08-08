@@ -69,8 +69,12 @@ def listen():
 def send(target_ip, title, message):
   print("Sending notification...")
   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-  s.connect((target_ip, config.port))
-  s.send(f"{config.name}{config.delimiter}{title}{config.delimiter}{message}".encode('utf-8'))
+  s.settimeout(4)
+  try:
+    s.connect((target_ip, config.port))
+    s.send(f"{config.name}{config.delimiter}{title}{config.delimiter}{message}".encode('utf-8'))
+  except socket.timeout:
+    print("Connection refused. Is the target device running the listener?")
   s.close()
 
 try:
