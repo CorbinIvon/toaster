@@ -1,5 +1,4 @@
-import sys
-import socket
+import sys, socket, signal
 from plyer import notification
 from time import sleep
 
@@ -40,13 +39,16 @@ def send_notification(title, message):
     app_name="toaster",
     timeout=10  # Notification duration in seconds
   )
-
+def signal_handler(sig, frame):
+  print("\nStopping the listener...")
+  sys.exit(0)
 def listen():
+  signal.signal(signal.SIGINT, signal_handler)
   print("Listening for notifications...")
   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   s.bind(('0.0.0.0', config.port))
   s.listen(5)
-  
+
   while True:
     client, addr = s.accept()
     data = client.recv(1024).decode('utf-8')
