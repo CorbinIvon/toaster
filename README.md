@@ -8,9 +8,9 @@ The toaster allows sending notifications to users on the same network!
 3. Receive notifications.
 
 # To Do
-- [ ] Listen (server)
-- [ ] Send (client)
-  - [ ] Send to single
+- [x] Listen (server)
+- [x] Send (client)
+  - [x] Send to single
   - [ ] Send to multiple
 
 # Dependencies
