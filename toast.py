@@ -39,29 +39,29 @@ def send_notification(title, message):
     app_name="toaster",
     timeout=10  # Notification duration in seconds
   )
-def signal_handler(sig, frame):
-  print("\nStopping the listener...")
-  sys.exit(0)
 def listen():
-  signal.signal(signal.SIGINT, signal_handler)
   print("Listening for notifications...")
   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   s.bind(('0.0.0.0', config.port))
   s.listen(5)
 
-  while True:
-    client, addr = s.accept()
-    data = client.recv(1024).decode('utf-8')
-    sender, title, message = data.split(config.delimiter)
-    if sender == "<use-dns>" or sender == "":
-      sender=socket.gethostbyaddr(addr[0])[0]
-    if sender == addr[0]:
-      sender = addr[0]
-    print(f"Received notification from {sender} ({addr[0]}:{addr[1]})")
-    if not data:
-      break
-    send_notification(title, f"From: {sender}\n" + message)
-    client.close()
+  try:
+    while True:
+      client, addr = s.accept()
+      data = client.recv(1024).decode('utf-8')
+      sender, title, message = data.split(config.delimiter)
+      if sender == "<use-dns>" or sender == "":
+        sender = socket.gethostbyaddr(addr[0])[0]
+      if sender == addr[0]:
+        sender = addr[0]
+      print(f"Received notification from {sender} ({addr[0]}:{addr[1]})")
+      if not data:
+        break
+      send_notification(title, f"From: {sender}\n" + message)
+      client.close()
+  except KeyboardInterrupt:
+    print("\nStopping the listener...")
+    s.close()
 
 def send(target_ip, title, message):
   print("Sending notification...")
