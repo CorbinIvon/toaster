@@ -1,12 +1,15 @@
-import sys, socket, signal
+import sys, socket, fcntl, struct
 from plyer import notification
-from time import sleep
+
+# Creator: Corbin Meier.
+# Purpose: So I can send my wife, who is in the other room, the Minecraft IP and Port without opening up anything else because those are wasted seconds waiting for other large things to load when I need something simple and sweet OMG Discord needs to load faster.
 
 class _conf_:
   # Default config
   port = 7515
   delimiter = "<|>"
   name="<use-dns>"
+  interface="eth0"
   def __init__(self):
     # If file exists, read config from file
     config_file = None
@@ -18,6 +21,7 @@ class _conf_:
       config_file.write("port=7515\n")
       config_file.write("delimiter=\"<|>\"\n")
       config_file.write("name=\n")
+      config_file.write("interface=\n")
       config_file.close()
       config_file = open("toast.conf", "r")
     for line in config_file:
@@ -29,9 +33,16 @@ class _conf_:
         display_name = line[5:].strip()
         if display_name != "\"\"":
           self.name = display_name
+      elif line.startswith("interface="):
+        self.interface = line[10:].strip()
     config_file.close()
-config=_conf_()
-
+def get_ip_address(ifname):
+  s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+  return socket.inet_ntoa(fcntl.ioctl(
+    s.fileno(),
+    0x8915,  # SIOCGIFADDR
+    struct.pack('256s', ifname[:15].encode('utf-8'))
+  )[20:24])
 def send_notification(title, message):
   notification.notify(
     title=title,
@@ -65,7 +76,6 @@ def listen():
   except KeyboardInterrupt:
     print("\nStopping the listener...")
     s.close()
-
 def send(target_ip, title, message):
   print("Sending notification...")
   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -76,7 +86,7 @@ def send(target_ip, title, message):
   except socket.timeout:
     print("Connection refused. Is the target device running the listener?")
   s.close()
-
+config=_conf_()
 try:
   # If arg is --help or -h, print help
   if len(sys.argv) > 1 and (sys.argv[1] == "--help" or sys.argv[1] == "-h"):
@@ -103,6 +113,30 @@ try:
     print("  Port: " + str(config.port))
     print("  Delimiter: " + config.delimiter)
     print("  Name: " + config.name)
+  elif len(sys.argv) > 1 and sys.argv[1] == "--discover":
+    # Find all devices on the network running the listener
+    # Get subnet. This is hardcoded for now
+    subnet = "10.10.10"
+
+    # Use the config.interface to get the subnet
+    ip_address = get_ip_address(config.interface)
+    subnet = ip_address[:ip_address.rfind(".")]
+    # Loop through all IP addresses in subnet
+    print (f"Scanning subnet " + subnet + ".0/24 on " + config.interface + "...")
+    for i in range(1, 255):
+      # Run a simple ping scan. Get hostname and IP address of all devices that respond
+      hostname = None
+      try:
+        hostname = socket.gethostbyaddr(f"{subnet}.{i}")[0]
+      except socket.herror:
+        hostname = "Unknown"
+        continue
+      except socket.timeout:
+        continue
+      print(f"{subnet}.{i} ({hostname})")
+
+  else:
+    print("Invalid arguments. Use -h or --help for help.")
 except KeyboardInterrupt:
   print("\nInterrupted by user. Exiting...")
   sys.exit(0)
