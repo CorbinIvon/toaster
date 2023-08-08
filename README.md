@@ -12,6 +12,9 @@ The toaster allows sending notifications to users on the same network!
 - [x] Send (client)
   - [x] Send to single
   - [ ] Send to multiple
+- [ ] Background Listen
+- [ ] GUI
+- [ ] Tray Icon (Windows)
 
 # Dependencies
 ```pip
