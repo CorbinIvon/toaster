@@ -77,15 +77,24 @@ def send(target_ip, title, message):
   print("Sending notification...")
   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   s.settimeout(4)
+  error_flag = ""
   try:
     s.connect((target_ip, config.port))
     s.send(f"{config.name}{config.delimiter}{title}{config.delimiter}{message}".encode('utf-8'))
   except socket.timeout:
-    print("Connection timeout. Is the target device running the listener?")
+    error_flag = "Connection timeout."
   except ConnectionRefusedError:
-    print("Connection refused. Is the target device running the listener?")
-
+    error_flag = "Connection refused."
+  except OSError:
+    error_flag = "Invalid host."
+  except KeyboardInterrupt:
+    print("\nStopping the sender...")
   s.close()
+  if error_flag == "":
+    print("Notification sent.")
+  else:
+    print("Notification not sent. " + error_flag)
+
 config=_conf_()
 try:
   # If arg is --help or -h, print help
