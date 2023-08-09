@@ -25,6 +25,7 @@ pip install pyinstaller plyer
 ```
 
 # Compile
-```py
-pyinstaller toast.spec
-```
+Windows: Run the build.bat
+Linux: Run the build.sh
+
+When the build is complete, the executable will be in the dist folder.
