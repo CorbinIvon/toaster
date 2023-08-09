@@ -1,1 +1,0 @@
-All Windows releases will be here.

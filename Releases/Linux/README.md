@@ -1,1 +1,0 @@
-All linux releases will be here.
