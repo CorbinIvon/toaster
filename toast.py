@@ -81,7 +81,10 @@ def send(target_ip, title, message):
     s.connect((target_ip, config.port))
     s.send(f"{config.name}{config.delimiter}{title}{config.delimiter}{message}".encode('utf-8'))
   except socket.timeout:
+    print("Connection timeout. Is the target device running the listener?")
+  except ConnectionRefusedError:
     print("Connection refused. Is the target device running the listener?")
+
   s.close()
 config=_conf_()
 try:
