@@ -1,5 +1,6 @@
 # toaster
 Or is this a pager?
+
 The toaster allows sending notifications to users on the same network!
 
 What is a toast notification?
@@ -15,6 +16,7 @@ A toast notification is a small, non-intrusive message or alert that appears tem
 
 # Compile
 Windows: Run the build.bat
+
 Linux: Run the build.sh
 
 When the build is complete, the executable will be in the dist folder.
