@@ -1,4 +1,4 @@
-import sys, socket, fcntl, struct
+import sys, socket, struct
 from plyer import notification
 
 # Creator: Corbin Meier.
@@ -22,6 +22,7 @@ class _conf_:
       config_file.write("delimiter=\"<|>\"\n")
       config_file.write("name=\n")
       config_file.write("interface=\n")
+      config_file.write("subnet=192.168.1.0\n")
       config_file.close()
       config_file = open("toast.conf", "r")
     for line in config_file:
@@ -35,14 +36,9 @@ class _conf_:
           self.name = display_name
       elif line.startswith("interface="):
         self.interface = line[10:].strip()
+      elif line.startswith("subnet="):
+        self.interface = line[7:].strip()
     config_file.close()
-def get_ip_address(ifname):
-  s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-  return socket.inet_ntoa(fcntl.ioctl(
-    s.fileno(),
-    0x8915,  # SIOCGIFADDR
-    struct.pack('256s', ifname[:15].encode('utf-8'))
-  )[20:24])
 def send_notification(title, message):
   notification.notify(
     title=title,
@@ -116,10 +112,8 @@ try:
   elif len(sys.argv) > 1 and sys.argv[1] == "--discover":
     # Find all devices on the network running the listener
     # Get subnet. This is hardcoded for now
-    subnet = "10.10.10"
-
+    subnet = config.subnet
     # Use the config.interface to get the subnet
-    ip_address = get_ip_address(config.interface)
     subnet = ip_address[:ip_address.rfind(".")]
     # Loop through all IP addresses in subnet
     print (f"Scanning subnet " + subnet + ".0/24 on " + config.interface + "...")
