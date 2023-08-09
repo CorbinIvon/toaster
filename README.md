@@ -12,7 +12,7 @@ The toaster allows sending notifications to users on the same network!
 - [x] Send (client)
   - [x] Send to single
   - [ ] Send to multiple
-- [ ] Background Listener
+- [x] Background Listener
   - Keep it running in the background.
 - [ ] GUI
   - Allow the user to select 1 or more users to page.
@@ -29,3 +29,5 @@ Windows: Run the build.bat
 Linux: Run the build.sh
 
 When the build is complete, the executable will be in the dist folder.
+
+You can utilize the scripts in Windows to start the listener and send notifications.
