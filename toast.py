@@ -10,7 +10,7 @@ class _conf_:
   delimiter = "<|>"
   name="<use-dns>"
   interface="eth0"
-  subnet="192.168.1.0
+  subnet="192.168.1.0"
   def __init__(self):
     # If file exists, read config from file
     config_file = None
